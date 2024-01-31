@@ -6,6 +6,8 @@ from manager.DB.DB import DB
 
 bot = telebot.TeleBot(SETTINGS['TG']['TOKEN'], parse_mode=None)
 ai = AI(SETTINGS['AI'])
+adminId = SETTINGS['ADMIN']['ID']
+adminName = SETTINGS['ADMIN']['USERNAME']
 
 #COMMANDS
 @bot.message_handler(commands=['start'])
@@ -20,11 +22,11 @@ def start(message):
 @bot.message_handler(commands=['help'])
 def help(message):
     bot.send_message(message.chat.id,
-                     "For any questions please contact @Ioann_business")
+                     f'For any questions please contact {adminName}')
 
 @bot.message_handler(commands=['reg'])
 def reg(message):
-    bot.send_message('5508618680',
+    bot.send_message(adminId,
                      f'{message.from_user.id} {message.from_user.first_name} {message.from_user.username}\nWANTS TO REGISTER')
 
 #MAIN
@@ -33,7 +35,7 @@ def handle_text(message):
     db = DB(SETTINGS['DB'])
 
     if (message.reply_to_message is not None) and \
-            (str(message.from_user.id) == "5508618680") and \
+            (str(message.from_user.id) == adminId) and \
             (message.text.split()[0] == "reg"):
         print(message.reply_to_message.text)
         user_id = message.reply_to_message.text.split()[0]

@@ -17,6 +17,10 @@ The bot was created to interact with ChatGPT via the Telegram messenger
     },
     'AI': {
         'API_KEY': '' // key from OpenAI
+    },
+     'ADMIN': {
+        'ID': '', // id in Telegram bot administrator
+        'USERNAME': '' //administrator username
     }
   }
   ```
