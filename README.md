@@ -4,11 +4,11 @@ The bot was created to interact with ChatGPT via the Telegram messenger
 
 ### Setup to start project
 
-1) Create a "Settings.py" file with the "SETTINGS" object
+1) Create a "settings.py" file with the "SETTINGS" object
  ```
    SETTINGS = {
     'TG': {
-        'TOKEN': '' // telegram token
+        'TOKEN': '' // telegram bot token
     },
     # настройки БД
     'DB': {
