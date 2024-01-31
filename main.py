@@ -44,8 +44,7 @@ def handle_text(message):
     else:
         if (db.getUserByUserId(message.from_user.id)):
             print(db.getUserByUserId(message.from_user.id))
-            #bot.send_message(message.chat.id, ai.chat(message.text))
-            bot.send_message(message.chat.id, "хуй")
+            bot.send_message(message.chat.id, ai.chat(message.text))
         else:
             bot.send_message(message.chat.id,
                              "Your profile was not found\n"
