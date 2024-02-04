@@ -1,12 +1,14 @@
 import openai
 
+
 class AI:
 
     def __init__(self, settings):
-        openai.api_key = settings['API_KEY'] #APIkey
+        openai.api_key = settings['API_KEY']  # APIkey
         openai.Model.list()
 
-    def chat(self, message):
+    @staticmethod
+    def chat(message):
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -16,7 +18,8 @@ class AI:
         chat_response = completion.choices[0].message.content
         return chat_response
 
-    def chatSys(self, message):
+    @staticmethod
+    def chatSys(message):
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -25,4 +28,3 @@ class AI:
         )
         chat_response = completion.choices[0].message.content
         return chat_response
-
