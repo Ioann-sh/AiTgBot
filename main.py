@@ -68,15 +68,13 @@ def handle_text(message):
 
             try:
                 print(db.getUserByUserId(message.from_user.id))
-                bot.send_message(message.chat.id, message.text)
-                # bot.send_message(message.chat.id, ai.chat(message.text, context))
+                # bot.send_message(message.chat.id, message.text)
+                bot.send_message(message.chat.id, ai.chat(message.text, context))
                 db.addContext(str(message.chat.id), context + message.text, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))    # сохрание контекста в БД
                 context_cache[message.chat.id] = {'message': context + message.text, 'timestamp': datetime.now()}   # сохрание контекста в кэше
             except Exception as e:
                 bot.send_message(message.chat.id, f"An error occurred while processing your request")
                 print(e)
-
-
         # если пользователя нет в БД
         else:
             bot.send_message(message.chat.id,
