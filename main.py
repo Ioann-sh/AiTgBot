@@ -1,5 +1,5 @@
 import telebot
-
+from telebot import types
 from datetime import datetime, timedelta
 
 from settings import SETTINGS
@@ -58,23 +58,34 @@ def handle_text(message):
     else:
         if db.getUserByUserId(message.from_user.id):
 
-            # контекс в кэше
-            if message.chat.id in context_cache and datetime.now() - \
-                    context_cache[message.chat.id]['timestamp'] <= CONTEXT_CACHE_INTERVAL:
-                context = context_cache[message.chat.id]['message']
-            # контекст в бд
-            else:
-                context = db.getContext(message.from_user.id)
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+            btn1 = types.KeyboardButton("Choose a new topic")
+            markup.row(btn1)
 
-            try:
-                print(db.getUserByUserId(message.from_user.id))
-                # bot.send_message(message.chat.id, message.text)
-                bot.send_message(message.chat.id, ai.chat(message.text, context))
-                db.addContext(str(message.chat.id), context + message.text, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))    # сохрание контекста в БД
-                context_cache[message.chat.id] = {'message': context + message.text, 'timestamp': datetime.now()}   # сохрание контекста в кэше
-            except Exception as e:
-                bot.send_message(message.chat.id, f"An error occurred while processing your request")
-                print(e)
+            if message.text == "Choose a new topic":
+                context_cache.clear()
+                db.deleteContext(message.from_user.id)
+                bot.send_message(message.chat.id, "What do you want to ask?")
+            else:
+                # поиск контекса в кэше
+                if message.chat.id in context_cache and datetime.now() - \
+                        context_cache[message.chat.id]['timestamp'] <= CONTEXT_CACHE_INTERVAL:
+                    context = context_cache[message.chat.id]['message']
+                    print("Контекст из кэша: " + context)
+                # в бд
+                else:
+                    context = db.getContext(message.from_user.id)
+                    print("Контекст из БД: " + context)
+
+                try:
+                    print(db.getUserByUserId(message.from_user.id))
+                    bot.send_message(message.chat.id, message.text, reply_markup=markup)
+                    # bot.send_message(message.chat.id, ai.chat(message.text, context), reply_markup=markup)
+                    db.addContext(str(message.chat.id), context + ' ' + message.text, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))    # сохрание контекста в БД
+                    context_cache[message.chat.id] = {'message': context + ' ' + message.text, 'timestamp': datetime.now()}   # сохрание контекста в кэше
+                except Exception as e:
+                    bot.send_message(message.chat.id, f"An error occurred while processing your request")
+                    print(e)
         # если пользователя нет в БД
         else:
             bot.send_message(message.chat.id,
